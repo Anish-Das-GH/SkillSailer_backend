@@ -37,14 +37,14 @@ def analyze_cv():
     else:
         analysis_content = "No analysis content available."
 
-    # Parse the analysis content
-    parsed_response = parse_analysis_content(analysis_content)
-
-    return jsonify({
-        "analysis": parsed_response,
+    # Return the analysis result as JSON with proper decoration
+    response = {
+        "analysis": analysis_content,
         "cv_text": cv_text,
         "job_description": job_description
-    })
+    }
+
+    return jsonify(response)
 
 def call_gemini_api(cv_text, job_description):
     gemini_api_key = os.getenv('GEMINI_API_KEY')
@@ -52,12 +52,12 @@ def call_gemini_api(cv_text, job_description):
 
     # Prepare the payload for the API request with the new prompt
     prompt = (
-        f"Hey, act like a skilled or very experienced ATS (Application Tracking System) with a deep understanding of the tech field of {job_description}."
-        f" Your task is to evaluate the resume based on the given job description. "
+        f"Hey, act like a skilled or very experienced ATS (Application Tracking System) with a deep understanding of tech field of {job_description}."
+        f"Your task is to evaluate the resume based on the given job description. "
         f"You should provide the best assistance for improving their resumes. "
         f"Assign the percentage matching based on {job_description} and the missing keywords with high accuracy."
-        f" Be honest with the score, even if the score gets 0% match."
-        f" Also suggest a better alternative job role based on my technical skills.\n\n"
+        f"Be honest with the score, even if the score gets 0% match."
+        f"Also suggest a better alternative job role based on my technical skills.\n\n"
         f"CV Text:\n{cv_text}"
     )
 
@@ -89,37 +89,6 @@ def call_gemini_api(cv_text, job_description):
             "status_code": response.status_code,
             "details": response.json()  # Include response details for debugging
         }
-def parse_analysis_content(analysis_content):
-    # Initialize the variables
-    overall_match = 0
-    missing_keywords = []
-    improvements = []
-    alternative_roles = []
-
-    # Here, you would implement actual parsing logic to extract data from the analysis_content.
-    lines = analysis_content.splitlines()
-    
-    for line in lines:
-        line = line.strip()
-        if "Overall Match:" in line:
-            try:
-                overall_match = int(line.split(":")[-1].strip().replace('%', ''))
-            except (ValueError, IndexError):
-                overall_match = 0  # Default to 0 if parsing fails
-        elif "Missing Keywords:" in line:
-            missing_keywords = [kw.strip() for kw in line.split(":")[-1].strip().split(", ") if kw.strip()]
-        elif "Improvements:" in line:
-            improvements = [imp.strip() for imp in line.split(":")[-1].strip().split(", ") if imp.strip()]
-        elif "Alternative Roles:" in line:
-            alternative_roles = [role.strip() for role in line.split(":")[-1].strip().split(", ") if role.strip()]
-
-    return {
-        "overallMatch": overall_match,
-        "missingKeywords": missing_keywords if missing_keywords else ["No keywords missing."],
-        "improvements": improvements if improvements else ["No improvements suggested."],
-        "alternativeRoles": alternative_roles if alternative_roles else ["No alternative roles suggested."],
-    }
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
