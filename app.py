@@ -89,7 +89,6 @@ def call_gemini_api(cv_text, job_description):
             "status_code": response.status_code,
             "details": response.json()  # Include response details for debugging
         }
-
 def parse_analysis_content(analysis_content):
     # Initialize the variables
     overall_match = 0
@@ -98,9 +97,6 @@ def parse_analysis_content(analysis_content):
     alternative_roles = []
 
     # Here, you would implement actual parsing logic to extract data from the analysis_content.
-    # This is a placeholder logic for demonstration purposes.
-    
-    # Assume that analysis_content is structured in a way you can parse (for example, using keywords):
     lines = analysis_content.splitlines()
     
     for line in lines:
@@ -108,21 +104,22 @@ def parse_analysis_content(analysis_content):
         if "Overall Match:" in line:
             try:
                 overall_match = int(line.split(":")[-1].strip().replace('%', ''))
-            except ValueError:
+            except (ValueError, IndexError):
                 overall_match = 0  # Default to 0 if parsing fails
         elif "Missing Keywords:" in line:
-            missing_keywords = line.split(":")[-1].strip().split(", ")
+            missing_keywords = [kw.strip() for kw in line.split(":")[-1].strip().split(", ") if kw.strip()]
         elif "Improvements:" in line:
-            improvements = line.split(":")[-1].strip().split(", ")
+            improvements = [imp.strip() for imp in line.split(":")[-1].strip().split(", ") if imp.strip()]
         elif "Alternative Roles:" in line:
-            alternative_roles = line.split(":")[-1].strip().split(", ")
+            alternative_roles = [role.strip() for role in line.split(":")[-1].strip().split(", ") if role.strip()]
 
     return {
         "overallMatch": overall_match,
-        "missingKeywords": missing_keywords,
-        "improvements": improvements,
-        "alternativeRoles": alternative_roles,
+        "missingKeywords": missing_keywords if missing_keywords else ["No keywords missing."],
+        "improvements": improvements if improvements else ["No improvements suggested."],
+        "alternativeRoles": alternative_roles if alternative_roles else ["No alternative roles suggested."],
     }
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
