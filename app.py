@@ -52,14 +52,7 @@ def call_gemini_api(cv_text, job_description):
 
     # Prepare the payload for the API request with the new prompt
     prompt = (
-        f"Hey, act like a skilled or very experienced ATS (Application Tracking System) 
-        with a deep understanding of tech field of {job_description}. Your task is to evaluate 
-        the resume based on the given job description. 
-        you should provide the best assistance for improving their resumes. 
-        Assign the percentage matching based on {job_description} and the missing keywords with 
-        high accuracy. Be honest with the score, even if the score gets 0% match. Also 
-        suggest a better alternative job role based on my technical skills.\n\n"
-        f"CV Text:\n{cv_text}"
+        "Hey, act like a skilled or very experienced ATS (Application Tracking System) with a deep understanding of tech field of {job_description}. Your task is to evaluate the resume based on the given job description. you should provide the best assistance for improving their resumes. Assign the percentage matching based on {job_description} and the missing keywords with high accuracy. Be honest with the score, even if the score gets 0% match. Also suggest a better alternative job role based on my technical skills.\n\n CV Text:\n{cv_text}"
     )
 
     payload = {
