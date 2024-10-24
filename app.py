@@ -52,10 +52,10 @@ def call_gemini_api(cv_text, job_description):
     prompt = (
         f"Hey, act like a skilled or very experienced ATS (Application Tracking System) "
         f"with a deep understanding of tech field of {job_description}. Your task is to evaluate "
-        f"the resume based on the given job description. You must consider the job market is very "
-        f"competitive and you should provide the best assistance for improving their resumes. "
+        f"the resume based on the given job description. "
+        f"you should provide the best assistance for improving their resumes. "
         f"Assign the percentage matching based on {job_description} and the missing keywords with "
-        f"high accuracy. Be honest with the score, even if the score gets 0% match. Also say if "
+        f"high accuracy. Be honest with the score, even if the score gets 0% match. Also say if"
         f"I am unfit for the job and suggest a better alternative job role based on my technical skills.\n\n"
         f"CV Text:\n{cv_text}"
     )
