@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Import CORS
 import PyPDF2
 import os
 import requests
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_file):
@@ -88,9 +90,6 @@ def call_gemini_api(cv_text, job_description):
             "status_code": response.status_code,
             "details": response.json()  # Include response details for debugging
         }
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
